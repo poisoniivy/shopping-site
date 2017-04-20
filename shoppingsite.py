@@ -7,9 +7,10 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 """
 
 
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash, session, request
 import jinja2
 
+import customers
 import melons
 
 
@@ -146,7 +147,28 @@ def process_login():
     # - if they don't, flash a failure message and redirect back to "/login"
     # - do the same if a Customer with that email doesn't exist
 
-    return "Oops! This needs to be implemented"
+    user_email = request.form['email']
+    user_password = request.form['password']
+    if user_email in customers.customers:
+        customer = customers.get_by_email(user_email)
+        if user_password == customer.password:
+            session['logged_in_customer_email'] = user_email
+            flash('You are now logged in!')
+            return redirect('/melons')
+        else:
+            flash('Wrong password!')
+            return redirect('/login')
+    else:
+        flash('Email not found!')
+        return redirect('/login')
+
+
+@app.route("/logout")
+def process_logout():
+    """Logging out user."""
+    del session['logged_in_customer_email']
+    flash("You are now logged out.")
+    return redirect('/melons')
 
 
 @app.route("/checkout")
