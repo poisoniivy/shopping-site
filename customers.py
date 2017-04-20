@@ -11,8 +11,8 @@ class Customer(object):
         self.firstname = firstname
         self.lastname = lastname
         self.email = email
-        self.password = password
-        # TODO: need to implement this
+        # self.password = password
+        self.hashed_password = hash(password)
 
     def __repr__(self):
         """Convenience method to show information about customer in console."""
@@ -20,6 +20,14 @@ class Customer(object):
         return "<Customer: %s %s, %s>" % (
             self.firstname, self.lastname, self.email)
 
+    def is_correct_password(self, password):
+        """Check if `password` is correct password for this customer.
+
+        Compares the hash of `password` to the stored hash of the
+        original password.
+        """
+
+        return hash(password) == self.hashed_password
 
 def read_customers_from_file(filepath):
     """Read customer data and populate dictionary of customers.

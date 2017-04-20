@@ -151,7 +151,8 @@ def process_login():
     user_password = request.form['password']
     if user_email in customers.customers:
         customer = customers.get_by_email(user_email)
-        if user_password == customer.password:
+        # if user_password == customer.password:
+        if customer.is_correct_password(user_password):
             session['logged_in_customer_email'] = user_email
             flash('You are now logged in!')
             return redirect('/melons')
